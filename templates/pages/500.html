@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+    {{ template "Header" "base"}}
+
+    <h1>500 Error</h1>
+    <h2>There was an internal server error</h2>
+    <a class="btn" href="/">Go Home</a>
+    <br />
+    <p>If this problem persists, contact support through the channels below</p>
+    <p>
+      email: <a href="mailto:admin@example.com">support@example.com</a>
+      <br />twitter: <a href="https://twitter.com/example">@support</a>
+    </p>
+  </body>
+
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    h1 {
+      font-size: 4rem;
+      margin-bottom: -2rem;
+    }
+    h2 {
+      font-size: 3rem;
+    }
+    .btn {
+      padding: 0.2rem;
+      font-size: 1.3rem;
+      margin: auto;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 15px;
+      color: hsl(0, 0%, 20%);
+      background-color: hsl(0, 0%, 93%);
+      margin-bottom: 2rem;
+    }
+  </style>
+</html>

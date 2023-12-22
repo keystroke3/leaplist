@@ -1,0 +1,31 @@
+  {{ range . }}
+  <li class="leap">
+      <p class="leap__name">
+        {{ .Name }} <a href="{{ .Original }}" target="_blank" rel="noopener noreferrer"><span>open</span></a>
+      </p>
+      <!-- <span class="sep"></span> -->
+      <p class="leap__shortcut">
+        shortcut: <a href="/{{ .Shortcut }}">{{ .Shortcut }}</a>
+      </p>
+      <p
+        id="original_{{.Shortcut }}_input"
+        class="original__input"
+        type="text"
+        value="{{ .Original }}"
+      /> {{ .Original }}</p>
+      <!-- <label for="original_{{ .Shortcut }}_input">Edit</label> -->
+
+      <div class="tags">
+      {{ range .Tags }}
+      <button
+        class="pill"
+        hx-get="/tags/{{.}}"
+        hx-trigger="click"
+        hx-swap="#leaps"
+      >
+        {{.}}
+      </button>
+      {{ end }}
+      </div>
+  </li>
+  {{ end }}

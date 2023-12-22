@@ -1,0 +1,105 @@
+@import url(./base.css);
+
+.leaps {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    width: 80vw;
+    margin-top: 4rem;
+    column-gap: 1rem;
+    row-gap: 1rem;
+}
+
+.leap {
+    background-color: hsl(0, 0%, 15%);
+    width: clamp(300px, 25vw, 25rem);
+    /* width: 30rem; */
+    display: flex;
+    flex-direction: column;
+    /* margin: 1rem; */
+    border-radius: 10px;
+    align-items: center;
+    align-content: center;
+    /* max-width: 15rem; */
+    box-shadow: 0 4px 8px hsla(0, 0%, 51%, 0.349);
+}
+
+.leap__name {
+    background-color: black;
+    width: 100%;
+    border-radius: 15px 15px 0 0;
+    text-align: center;
+    margin: 0;
+    padding-block: 5%;
+}
+
+.shortcut a {
+    color: hsl(152, 95%, 30%);
+}
+
+.sep {
+    border: 1px solid rgba(245, 245, 245, 0.356);
+    width: 100%;
+    margin-top: -5%;
+    margin-bottom: 2%;
+}
+
+.tags {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+}
+
+.pill {
+    background-color: hsl(0, 0%, 93%);
+    width: min-content;
+    border-radius: 15px;
+    border: none;
+    /* padding: 3% 5%; */
+    padding: 6px 12px;
+    margin: 2%;
+    color: hsl(0, 0%, 18%);
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.original {
+    width: inherit;
+    height: inherit;
+}
+
+.original__input {
+    margin: auto;
+    text-align: center;
+    /* width: 100%; */
+}
+
+.search {
+    width: clamp(350px, 50vw, 50rem);
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    /* display: block; */
+    /* Set the width to 100% */
+}
+
+.search__input {
+    width: inherit;
+    height: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 100;
+}
+
+/* .search__btn {
+    padding: 0.2rem;
+    font-size: 1.3rem;
+    margin: auto;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 15px;
+    background-color: hsl(0, 0%, 93%);
+} */
