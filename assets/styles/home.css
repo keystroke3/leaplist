@@ -94,12 +94,8 @@
     font-weight: 100;
 }
 
-/* .search__btn {
-    padding: 0.2rem;
-    font-size: 1.3rem;
-    margin: auto;
+.btn {
     border: none;
-    border-radius: 10px;
-    padding: 10px 15px;
-    background-color: hsl(0, 0%, 93%);
-} */
+    padding: 0.2rem;
+
+}

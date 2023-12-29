@@ -4,21 +4,18 @@
   <body>
     <h1>Welcome to LeapList</h1>
     <h2>A place to store all your favorite places on the web</h2>
-    <form class="search" hx-action="/q">
+    <form class="search" hx-action="q">
       <input type="text" class="search__input" placeholder="Search..." />
       <button type="submit" class="search__btn">Submit</button>
     </form>
-
-    <ul class="leaps" id="leaps">
-      <div
-        hx-get="/leaps?n={{.}}"
-        hx-swap="outerHTML"
-        ,
-        hx-trigger="load"
-        id="leaps"
-      >
-        Fetching leaps...
-      </div>
+    <ul
+      hx-get="/leaps?n={{.}}"
+      hx-swap="innerHTML"
+      hx-trigger="load"
+      class="leaps"
+      id="leaps"
+    >
+      <li>Fetching leaps...</li>
     </ul>
   </body>
 </html>
