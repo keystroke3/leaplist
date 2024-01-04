@@ -46,7 +46,7 @@
 
 .tags {
     list-style: none;
-    display: flex;
+    display: inline-block;
     flex-wrap: wrap;
     padding: 10px;
 }

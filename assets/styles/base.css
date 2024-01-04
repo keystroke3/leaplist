@@ -1,3 +1,7 @@
+* {
+    /* outline: solid red 1px; */
+}
+
 html {
     background-color: hsl(0, 0%, 20%);
     color: hsl(0, 0%, 93%);
@@ -20,7 +24,8 @@ body {
     flex-direction: column;
     align-items: center;
     align-content: center;
-    width: 100vw;
+    width: 99vw;
+    /* border: solid red 1px; */
 }
 
 button {

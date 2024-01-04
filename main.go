@@ -58,8 +58,6 @@ func (c *CustomContext) IntParam(s string, n ...int) int {
 	if err != nil || num == 0 {
 		return n[0]
 	}
-	fmt.Println("**** n = ", n[0])
-	fmt.Println("**** num = ", num)
 	return num
 }
 
@@ -197,5 +195,5 @@ func main() {
 		return c.JSON(http.StatusOK, leaps)
 	})
 
-	e.Logger.Fatal(e.Start(":5000"))
+	e.Logger.Fatal(e.Start(":7000"))
 }
