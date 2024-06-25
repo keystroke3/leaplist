@@ -17,7 +17,7 @@ const (
 	pageSize = 10
 )
 
-type Leap struct {
+type Relay struct {
 	Name        string
 	Original    string
 	Tags        []string
@@ -25,8 +25,8 @@ type Leap struct {
 	Description string
 }
 
-type LeapList struct {
-	Leaps []Leap
+type RelayGroup struct {
+	Leaps []Relay
 	Size  int
 	Next  int
 }
@@ -72,7 +72,7 @@ func randomUrl() string {
 }
 
 // provides a slice of `Leap` for testing
-func sampleLeaps(n int) map[string]Leap {
+func sampleLeaps(n int) map[string]Relay {
 	randTagsN := func(j int) []string {
 		var tags []string
 		for i := 0; i < j; i++ {
@@ -81,14 +81,14 @@ func sampleLeaps(n int) map[string]Leap {
 		return tags
 	}
 
-	l := make(map[string]Leap)
+	l := make(map[string]Relay)
 	for i := 0; i < n; i++ {
 		sc := randomSelect(nouns)
 		_, set := l[sc]
 		if set {
 			sc = fmt.Sprintf("%v%v", sc, i)
 		}
-		l[sc] = Leap{
+		l[sc] = Relay{
 			Name:        randomSelect(nouns),
 			Shortcut:    sc,
 			Original:    randomUrl(),
@@ -99,8 +99,8 @@ func sampleLeaps(n int) map[string]Leap {
 	return l
 }
 
-func nLeaps(n int) []Leap {
-	l := make([]Leap, n)
+func nLeaps(n int) []Relay {
+	l := make([]Relay, n)
 	i := 0
 	for _, v := range samples {
 		if i == n {
@@ -112,8 +112,8 @@ func nLeaps(n int) []Leap {
 	return l
 }
 
-func leapsByTag(tag string) []Leap {
-	leaps := []Leap{}
+func leapsByTag(tag string) []Relay {
+	leaps := []Relay{}
 	for _, v := range samples {
 		for _, t := range v.Tags {
 			if t == tag {
@@ -154,7 +154,7 @@ func main() {
 		num := cc.IntParam("n", 10)
 		fmt.Println("***** leap n = ", num)
 		leaps := nLeaps(num)
-		list := LeapList{
+		list := RelayGroup{
 			Leaps: leaps,
 			Size:  len(leaps),
 			Next:  2,
