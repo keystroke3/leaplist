@@ -1,13 +1,28 @@
 package stores
 
 type Relay struct {
-	Name        string
-	Original    string
-	Value       string
+	Id          int64
+	Title       string
+	Alias       string
+	Destination string
+	Target      string
+	Note        string
 	Description string
 }
+
+type User struct {
+	Id          string
+	Username    string
+	DisplayName string
+}
 type Tag struct {
-	Name string
+	Id    int64
+	Label string
+}
+
+type Station struct {
+	Id     string
+	UserId string
 }
 
 type RelayTags struct {

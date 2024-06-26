@@ -20,10 +20,12 @@ var stmtsStrings = map[string]string{
 	"untagRelay": `DELETE FROM relay_tag where relay_id = ? and tag_id = ?`,
 	"deleteTag":  `DELETE FROM tag where relay_id = ?`,
 
-	"getRelaysByTag": `SELECT r.id FROM relays r
+	"getRelaysByTag": `SELECT r.id, r.title, r.alias, r.description, r.note FROM relays r
 						JOIN relay_tags rt ON r.id = rt.relay_id
 						JOIN tags t ON rt.tag_id = t.id
 						WHERE t.label = ? AND station_id = ?`,
+	"getRelayById":     `SELECT r.id, r.title, r.alias, r.description, r.note FROM relays r WHERE id = ?`,
+	"getStationRelays": `SELECT r.id, r.title, r.alias, r.description, r.note FROM relays r WHERE station_id = ?`,
 }
 
 type DBTX interface {
@@ -76,30 +78,60 @@ func (s *Database) CreateTag(ctx context.Context, label string, stationId string
 }
 
 func (s *Database) TagRelay(ctx context.Context, relayID, tagID int64) error {
-	query := `INSERT INTO relay_tags (relay_id, tag_id) VALUES (?, ?)`
-	_, err := s.Db.ExecContext(ctx, query, relayID, tagID)
+	stmt := s.stmts["tagRelay"]
+	_, err := stmt.ExecContext(ctx, relayID, tagID)
 	return err
 }
 
 func (s *Database) UntagRelay(ctx context.Context, relayID, tagID int64) error {
-	query := `DELETE FROM relay_tas where ralay_id = ? AND tag_id = ?`
-	_, err := s.Db.ExecContext(ctx, query, relayID, tagID)
+	stmt := s.stmts["untagRelay"]
+	_, err := stmt.ExecContext(ctx, relayID, tagID)
 	return err
 }
 
-func (s *Database) GetRelaysByTag(ctx context.Context, label string, station_id string) ([]int64, error) {
+func (s *Database) GetRelaysByTag(ctx context.Context, label string, station_id string) ([]Relay, error) {
 	stmt := s.stmts["getRelaysByTag"]
 	rows, err := stmt.QueryContext(ctx, label, station_id)
 	if err != nil {
 		return nil, err
 	}
-	var relayIDs []int64
+	var relays []Relay
 	for rows.Next() {
-		var relayID int64
-		if err := rows.Scan(&relayID); err != nil {
+		r := Relay{}
+		if err := rows.Scan(&r.Id, &r.Title, &r.Alias, &r.Description, &r.Note); err != nil {
 			return nil, err
 		}
-		relayIDs = append(relayIDs, relayID)
+		relays = append(relays, r)
 	}
-	return relayIDs, nil
+	return relays, nil
+}
+
+func (s *Database) GetStationRelays(ctx context.Context, label string, station_id string) ([]Relay, error) {
+	stmt := s.stmts["getStationRelays"]
+	rows, err := stmt.QueryContext(ctx, label, station_id)
+	if err != nil {
+		return nil, err
+	}
+	var relays []Relay
+	for rows.Next() {
+		r := Relay{}
+		if err := rows.Scan(&r.Id, &r.Title, &r.Alias, &r.Description, &r.Note); err != nil {
+			return nil, err
+		}
+		relays = append(relays, r)
+	}
+	return relays, nil
+}
+
+func (s *Database) GetRelayByID(ctx context.Context, id string) (Relay, error) {
+	stmt := s.stmts["getRelayById"]
+	var r = Relay{}
+	rows, err := stmt.QueryContext(ctx, id)
+	if err != nil {
+		return r, err
+	}
+	if err := rows.Scan(&r.Id, &r.Title, &r.Alias, &r.Description, &r.Note); err != nil {
+		return r, err
+	}
+	return r, nil
 }

@@ -23,7 +23,7 @@ CREATE TABLE relay (
     title TEXT NOT NULL,
     alias TEXT NOT NULL,
     destination TEXT NOT NULL,
-    note TEXT NOT NULL,
+    note TEXT,
     station_id TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (station_id) REFERENCES station(id) ON DELETE CASCADE
