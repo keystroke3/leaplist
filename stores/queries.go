@@ -3,12 +3,17 @@ package stores
 import (
 	"context"
 	"database/sql"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 var stmtsStrings = map[string]string{
-	"createUser": `INSERT INTO user (id, username, display_name, passphrase) VALUES (?, ?, ?, ?)`,
-	"updateUser": `UPDATE user SET  (display_name) VALUES (?) WHERE id = ?`,
-	"deleteUser": `DELETE FROM user WHERE id = ?`,
+	"createUser":    `INSERT INTO user (id, username, display_name, passphrase) VALUES (?, ?, ?, ?)`,
+	"getUser":       `SELECT id, username, display_name, passphrase from user WHERE id=? OR username=?`,
+	"updateUser":    `UPDATE user SET  (display_name) VALUES (?) WHERE id = ?`,
+	"deleteUser":    `DELETE FROM user WHERE id = ?`,
+	"createStation": `INSERT INTO station (id, user_id) VALUES (?, ?)`,
+	"deleteStation": `DELETE FROM station WHERE id = ?`,
 	"createRelay": `INSERT INTO relay (title, alias, destination, note, station_id)
 					VALUES (?, ?) RETURNING id`,
 	"updateRelay": `UPDATE relay SET (title, alias, destination, note)
@@ -63,6 +68,19 @@ func (s *Database) Close() {
 	}
 }
 
+func (s *Database) CreateUser(ctx context.Context, username, display_name, passphrase string) error {
+	passwordHash, _ := bcrypt.GenerateFromPassword([]byte(passphrase), bcrypt.DefaultCost)
+	stmt := s.stmts["createRelay"]
+
+	_, err := stmt.ExecContext(ctx, username, display_name, passwordHash)
+	return err
+}
+func (s *Database) CreateStation(ctx context.Context, id, user_id string) error {
+	stmt := s.stmts["createStation"]
+	_, err := stmt.ExecContext(ctx, id, user_id)
+	return err
+}
+
 func (s *Database) CreateRelay(ctx context.Context, title, alias, destination, note, station_id string) (int64, error) {
 	var relayID int64
 	stmt := s.stmts["createRelay"]
@@ -98,7 +116,7 @@ func (s *Database) GetRelaysByTag(ctx context.Context, label string, station_id 
 	var relays []Relay
 	for rows.Next() {
 		r := Relay{}
-		if err := rows.Scan(&r.Id, &r.Title, &r.Alias, &r.Description, &r.Note); err != nil {
+		if err := rows.Scan(&r.Id, &r.Title, &r.Alias, &r.Note); err != nil {
 			return nil, err
 		}
 		relays = append(relays, r)
@@ -106,16 +124,16 @@ func (s *Database) GetRelaysByTag(ctx context.Context, label string, station_id 
 	return relays, nil
 }
 
-func (s *Database) GetStationRelays(ctx context.Context, label string, station_id string) ([]Relay, error) {
+func (s *Database) GetStationRelays(ctx context.Context, station_id string) ([]Relay, error) {
 	stmt := s.stmts["getStationRelays"]
-	rows, err := stmt.QueryContext(ctx, label, station_id)
+	rows, err := stmt.QueryContext(ctx, station_id)
 	if err != nil {
 		return nil, err
 	}
 	var relays []Relay
 	for rows.Next() {
 		r := Relay{}
-		if err := rows.Scan(&r.Id, &r.Title, &r.Alias, &r.Description, &r.Note); err != nil {
+		if err := rows.Scan(&r.Id, &r.Title, &r.Alias, &r.Note); err != nil {
 			return nil, err
 		}
 		relays = append(relays, r)
@@ -130,7 +148,7 @@ func (s *Database) GetRelayByID(ctx context.Context, id string) (Relay, error) {
 	if err != nil {
 		return r, err
 	}
-	if err := rows.Scan(&r.Id, &r.Title, &r.Alias, &r.Description, &r.Note); err != nil {
+	if err := rows.Scan(&r.Id, &r.Title, &r.Alias, &r.Note); err != nil {
 		return r, err
 	}
 	return r, nil

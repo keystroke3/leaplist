@@ -1,13 +1,15 @@
 CREATE TABLE user (
-    id PRIMARY KEY,
-    username TEXT NOT NULL,
+    id TEXT PRIMARY KEY,
+    username TEXT NOT NULL UNIQUE,
     display_name TEXT NOT NULL,
     passphrase BLOB NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TABLE station(
-    id PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT PRIMARY KEY,
     user_id TEXT NOT NULL,
+    domain BOOLEAN DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
@@ -33,7 +35,15 @@ CREATE TABLE relay_tag (
     tag_id INT NOT NULL,
     station_id TEXT NOT NULL,
     PRIMARY KEY (relay_id, tag_id),
-    FOREIGN KEY (relay_id) REFERENCES relays(id) ON DELETE CASCADE,
-    FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE,
+    FOREIGN KEY (relay_id) REFERENCES relay(id) ON DELETE CASCADE,
+    FOREIGN KEY (tag_id) REFERENCES tag(id) ON DELETE CASCADE,
+    FOREIGN KEY (station_id) REFERENCES station(id) ON DELETE CASCADE
+);
+CREATE TABLE auth_token (
+    token TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    station_id TEXT NOT NULL,
+    expiry TIMESTAMP NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
     FOREIGN KEY (station_id) REFERENCES station(id) ON DELETE CASCADE
 );

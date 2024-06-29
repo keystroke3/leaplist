@@ -1,4 +1,0 @@
-{{ if (eq .Size 0) }}
-<p style="text-align: center">No leaps to show size: {{ .Size }}</p>
-{{ end }} {{ if (gt .Size 0)}} {{ range .Leaps }} {{template "Leap" .}} {{ end
-}} {{ end }}

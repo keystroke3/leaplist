@@ -1,5 +1,110 @@
 package main
 
+import (
+	"context"
+	"fmt"
+	"log"
+	"math/rand"
+	"relay-kiwi/stores"
+)
+
+var samples = sampleRelays(maxRelays)
+var user = User{Id: "foouser", Username: "foo", DisplayName: "foo"}
+var station = Station{Id: "choochoo", UserId: user.Id}
+
+// selects a string from a given slice of strings `choices`
+func randomSelect(choices []string) string {
+	n := rand.Intn(len(choices))
+	return choices[n]
+}
+
+func randomUrl() string {
+	return fmt.Sprintf("https://%v.%v/%v", randomSelect(nouns), randomSelect(tlds), randomSelect(nouns))
+}
+
+// provides a slice of `relay` for testing
+func sampleRelays(n int, stationID ...string) map[string]Relay {
+	sID := station.Id
+	if len(stationID) > 0 {
+		sID = stationID[0]
+	}
+
+	randTagsN := func(j int) []string {
+		var tags []string
+		for i := 0; i < j; i++ {
+			tags = append(tags, randomSelect(adjectives))
+		}
+		return tags
+	}
+
+	l := make(map[string]Relay)
+	for i := 0; i < n; i++ {
+		sc := randomSelect(nouns)
+		_, set := l[sc]
+		if set {
+			sc = fmt.Sprintf("%v%v", sc, i)
+		}
+		l[sc] = Relay{
+			Title:       randomSelect(nouns),
+			Alias:       sc,
+			Destination: randomUrl(),
+			Tags:        randTagsN(rand.Intn(6)),
+			Note:        randomSelect(notes),
+			StationId:   sID,
+		}
+	}
+	return l
+}
+
+func nRelays(n int) []Relay {
+	l := make([]Relay, n)
+	i := 0
+	for _, v := range samples {
+		if i == n {
+			break
+		}
+		l[i] = v
+		i++
+	}
+	return l
+}
+
+func relaysByTag(tag string) []Relay {
+	relays := []Relay{}
+	for _, v := range samples {
+		for _, t := range v.Tags {
+			if t == tag {
+				relays = append(relays, v)
+				break
+			}
+		}
+	}
+	return relays
+}
+
+func populateTestDB() {
+	ctx := context.Background()
+	migrations := "file://stores/migration"
+	db, err := stores.NewSqliteDatabase(ctx, migrations, "./stores/kiwi.sqlite")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+	err = db.CreateUser(ctx, user.Username, user.DisplayName, "fooPass")
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = db.CreateStation(ctx, station.Id, user.Id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	relays := sampleRelays(20)
+	for _, r := range relays {
+		db.CreateRelay(ctx, r.Title, r.Alias, r.Destination, r.Note, r.StationId)
+	}
+
+}
+
 var tlds = []string{"com", "net", "org", "gov", "edu", "info", "biz", "co", "io", "pro"}
 
 var nouns = []string{
@@ -18,7 +123,7 @@ var adjectives = []string{
 	"ellipsoid", "deliverable", "maple", "yauld", "tent", "burdened", "shorthand", "antilithic", "frustrate", "leftish",
 }
 
-var descriptions = []string{
+var notes = []string{
 	"of or involving both light and heat",
 	"wandering or roaming",
 	"of or expressing support for making the province of Quebec essentially independent from Canada",

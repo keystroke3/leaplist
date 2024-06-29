@@ -7,7 +7,6 @@ type Relay struct {
 	Destination string
 	Target      string
 	Note        string
-	Description string
 }
 
 type User struct {
@@ -22,17 +21,12 @@ type Tag struct {
 
 type Station struct {
 	Id     string
+	Title  string
+	Domain string
 	UserId string
 }
 
 type RelayTags struct {
 	RelayId string
 	TagId   string
-}
-
-type SqlRelay struct {
-	Name        string
-	Original    string
-	Value       string
-	Description string
 }

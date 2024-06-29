@@ -1,0 +1,4 @@
+{{ if (eq .Size 0) }}
+<p style="text-align: center">No relays to show size: {{ .Size }}</p>
+{{ end }} {{ if (gt .Size 0)}} {{ range .relays }} {{template "relay" .}} {{ end
+}} {{ end }}

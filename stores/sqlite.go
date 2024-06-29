@@ -10,12 +10,12 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func NewSqliteDatabase(ctx context.Context, mu string, dbu string) (*Database, error) {
-	db, err := sql.Open("sqlite3", dbu)
+func NewSqliteDatabase(ctx context.Context, migrationUrl string, dbUrl string) (*Database, error) {
+	db, err := sql.Open("sqlite3", dbUrl)
 	if err != nil {
 		return nil, &StorageError{Op: "Unable to connect to sqlite db", Err: err}
 	}
-	runMigrations(db, mu)
+	runMigrations(db, migrationUrl)
 	store := &Database{Db: db, stmts: make(map[string]*sql.Stmt)}
 	err = store.PrepareStatements(ctx)
 	if err != nil {

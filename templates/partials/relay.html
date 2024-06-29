@@ -1,0 +1,21 @@
+{{ define "relay"}}
+<li class="relay">
+  <p class="relay__name">
+    {{ .Title }}
+    <a href="{{ .Destination }}" target="_blank" rel="noopener noreferrer"><span>open</span></a>
+  </p>
+  <p class="relay__shortcut">
+    shortcut: <a href="/{{ .Alias }}">{{ .Alias }}</a>
+  </p>
+  <p>{{ .Destination }}</p>
+
+  <div class="tags">
+    {{ range .Tags }}
+    <button class="pill" hx-get="/tags/{{.}}" hx-trigger="click" hx-swap="#relays">
+      {{.}}
+    </button>
+    {{ end }}
+  </div>
+</li>
+
+{{ end }}
